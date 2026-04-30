@@ -119,7 +119,7 @@ outputs/
 | **config.py** | Configuration & parameters |
 | **utils.py** | Shared utilities |
 | **sam_device_patch.py** | SAM device compatibility |
-| **metrics.py** | Metric calculations |
+
 
 ---
 
@@ -183,7 +183,6 @@ tail -f outputs/exp04_multiscale_finetuned/logs/processing.log
 - **Architecture & theory** — See research paper
 - **All configuration options** — See `config.py` comments
 - **Utility functions** — See `utils.py` docstrings
-- **Metric definitions** — See `metrics.py`
 
 ---
 
@@ -193,7 +192,3 @@ After segmentation:
 1. Review metrics: `outputs/exp04_multiscale_finetuned/metrics/summary_metrics.csv`
 2. View visualizations: `python visualize_samples.py --all_experiments --comparisons`
 3. Use segments for classification or evaluation
-
----
-
-**Last updated:** 2026-04-30
