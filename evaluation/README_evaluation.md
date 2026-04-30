@@ -8,7 +8,7 @@ Evaluates CLIP classification predictions against pixel-level ground truth raste
 
 ### 1. Setup
 ```bash
-pip install numpy pandas matplotlib Pillow
+pip install numpy pandas matplotlib Pillow scipy
 ```
 
 ### 2. Configure
@@ -38,6 +38,17 @@ outputs/<experiment>/
 ├── final_summary_pixelgt.csv         ← aggregated by ring + class
 └── visualizations/
     └── {devEUI}_ring_eval.png        ← 5-panel figure per tree
+```
+
+### 4. Run Statistical Tests
+```bash
+python statistical_tests.py
+```
+
+Output:
+```
+outputs/statistical_tests_results.csv
+  ├── RQ, Comparison, Metric, N, Mean A, Mean B, Difference, p-value, Significant
 ```
 
 ---
@@ -104,6 +115,11 @@ All metrics use true pixel overlap, NOT area approximations.
   4. Pixel GT overlay + rings
   5. Bar chart (CLIP% vs GT% per ring per class)
 
+**statistical_tests_results.csv**
+- Statistical significance test results (Wilcoxon signed-rank)
+- Columns: RQ, Comparison, Metric, N, Mean A, Mean B, Difference, Statistic, p-value, Significant
+- Use to: Determine if differences are statistically significant (p < 0.05)
+
 ---
 
 ## Results Interpretation
@@ -153,6 +169,20 @@ Ring 5.0m, Building
   → Weak correlation; buildings rare in ring, CLIP struggles with class balance
   → Not reliable for this ring × class combination
 ```
+
+### Statistical Significance
+
+**Wilcoxon Signed-Rank Test:**
+- Non-parametric paired test (does not assume normal distribution)
+- Tests if two matched samples differ significantly
+- Significance level: α = 0.05
+- Result: YES (p < 0.05) = statistically significant | NO (p ≥ 0.05) = not significant
+
+**Research Questions Addressed:**
+- **RQ1:** Does multi-scale fusion improve coverage? (E1 vs E4)
+- **RQ2:** Does aerial-specific prompt improve classification? (Prompt 0 vs 1.3)
+- **RQ3:** Does crop method affect accuracy? (Zero vs Dual Composite)
+- **RQ4:** Does pipeline generalize across datasets? (Aerial 2020 vs Google Satellite)
 
 ---
 
@@ -210,6 +240,18 @@ GT_CLASS_COLORS_RGBA = {
 }
 ```
 
+### Statistical Tests Configuration
+```python
+# statistical_tests.py paths (edit to point to your evaluation outputs)
+PATH_E1 = "<output>/segmentation/outputs/exp01_single_default/metrics/per_image_metrics.csv"
+PATH_E4 = "<output>/segmentation/outputs/exp04_multiscale_finetuned/metrics/per_image_metrics.csv"
+PATH_PROMPT0 = "<output>/evaluation/outputs/aerial2020_zero_prompt0_results/per_tree_metrics_pixelgt.csv"
+PATH_PROMPT13 = "<output>/evaluation/outputs/aerial2020_zero_prompt1.3_results/per_tree_metrics_pixelgt.csv"
+# ... (other paths for crop methods and cross-dataset)
+
+ALPHA = 0.05  # significance level
+```
+
 ---
 
 ## Common Issues
@@ -222,6 +264,7 @@ GT_CLASS_COLORS_RGBA = {
 | Pixel GT missing | Ensure `.npz` files in `PIXEL_GT_DIR` with correct keys |
 | Memory error on large datasets | Process trees in batches; reduce to subset first |
 | Ring circles don't align | Check `METERS_PER_PIXEL` formula matches GT generation |
+| Statistical tests fail | Update paths in `statistical_tests.py` to point to your evaluation outputs |
 
 ---
 
@@ -239,8 +282,7 @@ grep {devEUI} outputs/<experiment>/per_tree_metrics_pixelgt.csv
 **Compare experiments:**
 ```bash
 # Run with different approaches/prompts
-# Edit config.py: EXPERIMENT_NAME = "...prompt1.2..."
-python evaluate_rings.py
+python evaluate_rings.py  # run multiple times with different config.py
 
 # Compare final summaries
 diff final_summary_v1.csv final_summary_v2.csv
@@ -252,10 +294,23 @@ diff final_summary_v1.csv final_summary_v2.csv
 tail -n +2 final_summary_pixelgt.csv | sort -t, -k6 -rn | head -3
 ```
 
+**Find failure modes (low-performing trees):**
+```python
+import pandas as pd
+df = pd.read_csv("outputs/<experiment>/per_tree_metrics_pixelgt.csv")
+# Find trees with very low vegetation F1 in Ring 1
+low_veg = df[df["vegetation_2m5_f1"] < 0.3]
+print(f"Trees with Vegetation F1 < 0.3: {len(low_veg)}")
+print(low_veg[["dev_eui", "vegetation_2m5_f1", "vegetation_2m5_pred_pct"]])
+```
+
 **Export for publication:**
 ```bash
 # Final summary has all key metrics with R² and MBE
 cat outputs/<experiment>/final_summary_pixelgt.csv | column -t -s,
+
+# Statistical test results
+cat outputs/statistical_tests_results.csv | column -t -s,
 ```
 
 ---
@@ -264,7 +319,8 @@ cat outputs/<experiment>/final_summary_pixelgt.csv | column -t -s,
 
 | File | Purpose |
 |------|---------|
-| **evaluate_rings.py** | Main evaluation script (run this) |
+| **evaluate_rings.py** | Main evaluation script (per-tree metrics & visualizations) |
+| **statistical_tests.py** | Statistical significance testing (Wilcoxon tests for RQ1–RQ4) |
 | **config.py** | Configuration & ring definitions |
 
 ---
@@ -276,6 +332,7 @@ cat outputs/<experiment>/final_summary_pixelgt.csv | column -t -s,
 - **Metrics definitions** — Standard computer vision (precision, recall, F1, IoU, R², MBE)
 - **SAM segments source** — From `exp04_multiscale_finetuned`
 - **CLIP predictions source** — From `stage1_context` with selected approach and prompt
+- **Statistical methodology** — Wilcoxon signed-rank test (non-parametric, paired, two-sided)
 
 ---
 
@@ -294,32 +351,26 @@ open outputs/<experiment>/visualizations/sample_tree_ring_eval.png
 ### Compare Approaches
 ```bash
 # Run with approach 1
-# Edit config.py: CLASSIFICATIONS_DIR = "...zero/..."
-# Edit config.py: EXPERIMENT_NAME = "...zero_prompt1.3..."
-python evaluate_rings.py
+python evaluate_rings.py  # (edit config.py for approach 1)
 
 # Run with approach 2
-# Edit config.py: CLASSIFICATIONS_DIR = "...dual_composite/..."
-# Edit config.py: EXPERIMENT_NAME = "...dual_composite_prompt1.3..."
-python evaluate_rings.py
+python evaluate_rings.py  # (edit config.py for approach 2)
 
 # Compare final summaries
-diff outputs/.../zero_prompt1.3/final_summary_pixelgt.csv outputs/.../dual_composite_prompt1.3/final_summary_pixelgt.csv
+diff final_summary_v1.csv final_summary_v2.csv
 ```
 
-### Compare Prompt Versions
+### Statistical Significance Testing
 ```bash
-# Stage 1: Run classification with different prompts
-# config.py: PROMPT_VERSION = "1.2"
-python exp01_clip_classification.py --approach dual_composite
+# After running evaluations for both conditions, update paths in statistical_tests.py
+python statistical_tests.py
 
-# Stage 1: Run classification with prompt 1.3
-# config.py: PROMPT_VERSION = "1.3"
-python exp01_clip_classification.py --approach dual_composite
+# Review results
+cat outputs/statistical_tests_results.csv
 
-# Evaluation: Compare both
-# edit config.py for each run, change EXPERIMENT_NAME
-python evaluate_rings.py  # run twice with different CLASSIFICATIONS_DIR
+# Example output:
+# RQ1,E1 vs E4,Pixel Coverage (%),95,48.5,52.3,3.8,1234.5,0.0043,YES (p=0.0043)
+# RQ2,Prompt0 vs Prompt1.3,Vegetation F1 Ring 1,95,0.42,0.58,0.16,2105.0,0.0001,YES (p=0.0001)
 ```
 
 ---
@@ -327,11 +378,14 @@ python evaluate_rings.py  # run twice with different CLASSIFICATIONS_DIR
 ## Next Steps
 
 After evaluation:
-1. Review final summary: `final_summary_pixelgt.csv`
-2. Check visualizations: `visualizations/`
-3. Identify rings and classes where CLIP performs well vs. poorly
-4. Compare R² and MBE across approaches/prompts
-5. Use insights for:
+1. Run `evaluate_rings.py` to generate per-tree metrics and visualizations
+2. Run `statistical_tests.py` to test research questions
+3. Review final summary: `final_summary_pixelgt.csv`
+4. Check visualizations: `visualizations/`
+5. Review significance tests: `statistical_tests_results.csv`
+6. Identify rings and classes where CLIP performs well vs. poorly
+7. Compare R² and MBE across approaches/prompts
+8. Use insights for:
    - Final recommendations on best approach/prompt
    - Ablation study analysis
    - Cross-dataset validation
@@ -345,13 +399,17 @@ To reproduce results:
 1. Ensure pixel GT .npz files match image dimensions (1024×1024)
 2. Verify GT .npz keys match `GT_NPZ_KEYS` in config
 3. Set `EVAL_SUFFIX = "_2"` (225 DPI reference)
-4. Use best-performing approach from Stage 1:
+4. Run evaluation:
    ```bash
    EXPERIMENT_NAME = "aerial2020_dual_composite_prompt1.3_single"
    CLASSIFICATIONS_DIR = ".../stage1_context/dual_composite/classifications"
    python evaluate_rings.py
    ```
-5. Review `final_summary_pixelgt.csv` for summary metrics with R² and MBE
+5. Run statistical tests:
+   ```bash
+   python statistical_tests.py
+   ```
+6. Review `final_summary_pixelgt.csv` and `statistical_tests_results.csv`
 
 ---
 
@@ -361,7 +419,6 @@ If using this evaluation framework, cite:
 - Ring-based buffer methodology for tree-centric spatial analysis
 - QGIS rasterization from vector shapefiles for ground truth
 - Standard metrics: precision, recall, F1, IoU, R², MBE
-```
-- ✓ Workflow examples (basic, compare approaches, compare prompts)
-- ✓ Next steps
-- ✓ Reproducibility instructions
+- Wilcoxon signed-rank test for non-parametric paired statistical testing
+- ✓ Updated Next Steps to include statistical tests
+- ✓ Updated Reproducibility to include statistical tests
