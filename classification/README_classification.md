@@ -1,6 +1,3 @@
-Here's the GitHub-ready README following the SAM format exactly:
-
-```markdown
 # Stage 1 Classification — CLIP Context Handling
 
 CLIP-based classification of SAM segments with configurable context-handling approaches and prompt versions.
