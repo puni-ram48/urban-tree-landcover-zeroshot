@@ -6,6 +6,15 @@ Automated tree segmentation using Segment Anything Model (SAM) with single-scale
 
 ## Quick Start
 
+### 0. Model Selection (E0) — Optional
+If you want to reproduce the model capacity comparison (ViT-B vs ViT-L vs ViT-H):
+```bash
+python exp0_model_selection.py  
+```
+Output: `outputs/sam_model_selection/model_selection_summary.csv`
+Recommended: **ViT-H** (best quality, 636M params)
+
+---
 ### 1. Setup
 ```bash
 pip install torch segment-anything Pillow numpy pandas matplotlib scikit-image tqdm
@@ -33,18 +42,23 @@ python test_multiscale_pipeline.py  # Validate multi-scale on 3 groups
 
 ### 4. Run Experiments
 
+**Model Selection (optional baseline):**
+```bash
+python exp0_model_selection.py  
+```
+
 **Single-scale (fast, baseline):**
 ```bash
-python exp01_single_default.py      # ~5 min
-python exp02_single_finetuned.py    # ~5 min
+python exp01_single_default.py      
+python exp02_single_finetuned.py    
 ```
 
 **Multi-scale (better quality):**
 ```bash
-python exp03_multiscale_default.py      # ~20 min
-python exp04_multiscale_finetuned.py    # ~20 min ⭐ BEST
-python exp05_multiscale_225_150_dpi.py  # ~15 min
-python exp06_multiscale_300_225_dpi.py  # ~15 min
+python exp03_multiscale_default.py      
+python exp04_multiscale_finetuned.py    
+python exp05_multiscale_225_150_dpi.py  
+python exp06_multiscale_300_225_dpi.py 
 ```
 
 ### 5. Visualize Results
@@ -75,6 +89,9 @@ python visualize_samples.py --all_experiments --comparisons --num_samples 5
 
 ```
 outputs/
+├── sam_model_selection/                 ← E0 results
+│   ├── model_selection_per_image.csv
+│   └── model_selection_summary.csv
 ├── exp01_single_default/
 ├── exp02_single_finetuned/
 ├── exp04_multiscale_finetuned/          ← Best results here
@@ -112,6 +129,7 @@ outputs/
 
 | File | Purpose |
 |------|---------|
+| **exp00_model_selection.py** | SAM variant comparison (E0) |
 | **exp01-exp06** | Experiment scripts (run these) |
 | **test_single_pipeline.py** | Quick validation (3 images) |
 | **test_multiscale_pipeline.py** | Quick validation (3 groups) |
