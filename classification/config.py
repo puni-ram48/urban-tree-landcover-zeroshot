@@ -71,9 +71,9 @@ DEVICE = "cuda"
 # CLASSES
 CLASS_NAMES = ["Vegetation", "Building", "Road"]
 CLASS_COLORS = {
-    "Vegetation": [0.0, 1.0, 0.039, 0.6],
-    "Building": [1.0, 0.196, 0.0, 0.6],
-    "Road": [1.0, 0.843, 0.0, 0.6],
+    "Vegetation": [0.059, 0.416, 0.196, 0.6],  # #0F6A32 dark green
+    "Building": [0.624, 0.184, 0.184, 0.6],    # #9F2F2F dark red
+    "Road": [0.365, 0.349, 0.349, 0.6],        # #5D5959 dark gray
 }
 
 # APPROACHES
