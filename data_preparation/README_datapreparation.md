@@ -1,4 +1,4 @@
-# Data Preparation — QGIS Dataset Extraction
+# Data Preparation : QGIS Dataset Extraction
 
 Extracts tree-centered image crops and generates pixel-level ground truth masks from TreeDataBase vector layers.
 
