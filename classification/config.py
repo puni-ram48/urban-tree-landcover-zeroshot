@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Configuration for Stage 1 — CLIP Classification Experiments
+Configuration for CLIP Classification Experiments
 
 Configurable parameters:
   - Context-handling approaches (zero, highlight, larger_crop, dual_composite)
@@ -11,7 +11,7 @@ Pipeline: SAM segments (.npz) -> CLIP classification -> metrics CSV
 Usage:
   To switch dataset: update IMAGES_DIR, SEGMENTS_DIR, CITY_NAME, OUTPUT_BASE_DIR
   To switch prompt version: change PROMPT_VERSION
-  To switch context approach: pass --approach flag to exp01_clip_classification.py
+  To switch context approach: pass --approach flag to clip_classification.py
 """
 
 import os
@@ -20,10 +20,10 @@ import os
 BASE_DIR = "/path/to/project/root"
 
 IMAGES_DIR = os.path.join(BASE_DIR, "dataset/<images_folder>")
-SEGMENTS_DIR = os.path.join(BASE_DIR, "<output_folder>/segmentation/outputs/exp04_multiscale_finetuned/segments")
+SEGMENTS_DIR = os.path.join(BASE_DIR, "segmentation/outputs/exp04_multiscale_finetuned/segments")
 CLIP_MODEL_NAME = "openai/clip-vit-large-patch14-336"
 CLIP_MODEL_PATH = os.path.join(BASE_DIR, "models/clip_model")
-OUTPUT_BASE_DIR = os.path.join(BASE_DIR, "<output_folder>/classification/outputs/stage1_context")
+OUTPUT_BASE_DIR = os.path.join(BASE_DIR, "classification/outputs/")
 
 
 # DATASET
@@ -116,7 +116,7 @@ LOGS_SUBDIR = "logs"
 PER_IMAGE_METRICS_FILE = "per_image_metrics.csv"
 SUMMARY_METRICS_FILE = "summary_metrics.csv"
 TERMINAL_LOG_FILE = "terminal_log.txt"
-COMPARISON_SUMMARY_FILE = "stage1_approach_comparison.csv"
+COMPARISON_SUMMARY_FILE = "clip_approach_comparison.csv"
 
 # LOGGING & VISUALIZATION
 LOG_LEVEL = "INFO"
