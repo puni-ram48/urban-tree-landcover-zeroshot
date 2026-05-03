@@ -115,8 +115,8 @@ outputs/
 │   ├── dual_composite_single/
 │   ├── comparison/
 │   │   └── {devEUI}_comparison.png ← all 4 approaches side-by-side
-│   └── stage1_approach_comparison.csv
-├── stage1_aggregate_summary.csv    ← summary across all approaches
+│   └── clip_approach_comparison.csv
+├── clip_aggregate_summary.csv    ← summary across all approaches
 └── checkpoint.npy                 ← intermediate checkpoint (removed on completion)
 ```
 
