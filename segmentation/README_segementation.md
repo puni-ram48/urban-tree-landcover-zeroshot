@@ -41,38 +41,38 @@ N_TREES = 96
 
 ### 3. Test (Optional)
 ```bash
-python test_single_pipeline.py      # Validate single-scale on 3 images
-python test_multiscale_pipeline.py  # Validate multi-scale on 3 groups
+python segmentation/test_singlescale_pipeline.py      # Validate single-scale on 3 images
+python segmentation/test_multiscale_pipeline.py  # Validate multi-scale on 3 groups
 ```
 
 ### 4. Run Experiments
 
 **Model Selection (optional baseline):**
 ```bash
-python exp0_model_selection.py  
+python segmentation/exp0_model_selection.py  
 ```
 
 **Single-scale (fast, baseline):**
 ```bash
-python exp01_single_default.py      
-python exp02_single_finetuned.py    
+python segmentation/exp01_single_default.py      
+python segmentation/exp02_single_finetuned.py    
 ```
 
 **Multi-scale (better quality):**
 ```bash
-python exp03_multiscale_default.py      
-python exp04_multiscale_finetuned.py    
-python exp05_multiscale_225_150_dpi.py  
-python exp06_multiscale_300_225_dpi.py 
+python segmentation/exp03_multiscale_default.py      
+python segmentation/exp04_multiscale_finetuned.py    
+python segmentation/exp05_multiscale_225_150_dpi.py  
+python segmentation/exp06_multiscale_300_225_dpi.py 
 ```
 
 ### 5. Visualize Results
 ```bash
 # Single experiment
-python visualize_samples.py --experiment exp04_multiscale_finetuned --num_samples 3
+python segmentation/visualize_samples.py --experiment exp04_multiscale_finetuned --num_samples 3
 
 # All experiments comparison
-python visualize_samples.py --all_experiments --comparisons --num_samples 3
+python segmentation/visualize_samples.py --all_experiments --comparisons --num_samples 3
 ```
 
 ---
