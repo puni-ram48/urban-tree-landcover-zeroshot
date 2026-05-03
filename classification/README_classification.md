@@ -1,24 +1,32 @@
-# Stage 1 Classification — CLIP Context Handling
+# CLIP Classification Pipeline
 
-CLIP-based classification of SAM segments with configurable context-handling approaches and prompt versions.
+Contrastive Language–Image Pretraining (CLIP-based classification of SAM segments with configurable context-handling approaches and prompt versions.
 
 ---
 
 ## Quick Start
 
-### 1. Setup
+### 1. Setup 
 ```bash
-pip install torch transformers Pillow numpy pandas matplotlib scikit-learn scipy psutil
+# already installed requirements.txt in segmentation phase
+pip install -r requirements.txt --break-system-packages 
+```
+### CLIP Model Setup
+The CLIP model is automatically downloaded the first time the pipeline is executed.
+
+Unlike the default Hugging Face cache (~/.cache/huggingface), this project stores the model locally inside the project directory:
+```bash
+models/clip_model/
 ```
 
 ### 2. Configure
 Edit `config.py`:
 ```python
 BASE_DIR = "/path/to/project/root"
-IMAGES_DIR = os.path.join(BASE_DIR, "data/<dataset_name>/<images_folder>")
-SEGMENTS_DIR = os.path.join(BASE_DIR, "<output_folder>/segmentation/outputs/exp04_multiscale_finetuned/segments")
+IMAGES_DIR = os.path.join(BASE_DIR, "dataset/<images_folder>")
+SEGMENTS_DIR = os.path.join(BASE_DIR, "segmentation/outputs/<experiment_name>/segments")
 CLIP_MODEL_PATH = os.path.join(BASE_DIR, "models/clip_model/clip-vit-large-patch14-336/")
-OUTPUT_BASE_DIR = os.path.join(BASE_DIR, "<output_folder>/classification/outputs/stage1_context")
+OUTPUT_BASE_DIR = os.path.join(BASE_DIR, "classification/outputs/")
 
 PROMPT_VERSION = "1.3"  # Options: "0", "1", "1.1", "1.2", "1.3"
 DEVICE = "cuda"
@@ -26,35 +34,35 @@ DEVICE = "cuda"
 
 ### 3. Test (Optional)
 ```bash
-python exp01_clip_classification.py --approach zero --test       # Test run
-python visualize_samples.py --approach zero --test               # Visualize test
+python classification/clip_classification.py --approach zero --test       # Test run
+python classification/visualize_samples.py --approach zero --test               # Visualize test
 ```
 
 ### 4. Run Experiments
 
 **All four context-handling approaches:**
 ```bash
-python exp01_clip_classification.py --approach zero              # ~30 min
-python exp01_clip_classification.py --approach highlight         # ~30 min
-python exp01_clip_classification.py --approach larger_crop       # ~30 min
-python exp01_clip_classification.py --approach dual_composite    # ~30 min ⭐ BEST
+python classification/clip_classification.py  --approach zero              
+python classification/clip_classification.py --approach highlight         
+python classification/clip_classification.py --approach larger_crop       
+python classification/clip_classification.py --approach dual_composite    
 ```
 
 **With aggregation mode (optional):**
 ```bash
-python exp01_clip_classification.py --approach zero --aggregation average
-python exp01_clip_classification.py --approach highlight --aggregation average
+python classification/clip_classification.py --approach zero --aggregation average
+python classification/clip_classification.py --approach highlight --aggregation average
 ```
 
 ### 5. Visualize Results
 ```bash
 # Single approach
-python visualize_samples.py --approach zero
-python visualize_samples.py --approach highlight
+python classification/visualize_samples.py  --approach zero
+python classification/visualize_samples.py  --approach highlight
 
 # Compare all approaches side-by-side
-python visualize_samples.py --compare
-python visualize_samples.py --compare --max_images 10
+python classification/visualize_samples.py  --compare
+python classification/visualize_samples.py  --compare --max_images 10
 ```
 
 ---
@@ -83,7 +91,7 @@ python visualize_samples.py --compare --max_images 10
 ## Output Structure
 
 ```
-outputs/stage1_context/
+outputs/
 ├── zero_single/
 │   ├── classifications/           ← {devEUI}_classification.npy
 │   ├── metrics/
@@ -131,7 +139,7 @@ outputs/stage1_context/
 
 | File | Purpose |
 |------|---------|
-| **exp01_clip_classification.py** | Main experiment script (run this) |
+| **clip_classification.py** | Main experiment script (run this) |
 | **visualize_samples.py** | Generate visualization PNGs |
 | **config.py** | Configuration & parameters |
 | **utils.py** | Shared utilities (logging, CLIP, metrics, I/O) |
