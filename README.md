@@ -19,7 +19,7 @@ This project implements a complete pipeline for:
 
 ## 🧠 Pipeline Architecture
 
-![Pipeline Architecture](pipeline_overview.jpg)
+![Pipeline Architecture](pipeline_overview.png)
 
 
 ---
