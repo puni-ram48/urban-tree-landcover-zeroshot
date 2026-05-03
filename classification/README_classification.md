@@ -1,6 +1,6 @@
 # CLIP Classification Pipeline
 
-Contrastive Language–Image Pretraining (CLIP-based classification of SAM segments with configurable context-handling approaches and prompt versions.
+Contrastive Language–Image Pretraining (CLIP)-based classification of SAM segments with configurable context-handling approaches and prompt versions.
 
 ---
 
