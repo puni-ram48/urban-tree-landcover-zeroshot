@@ -17,19 +17,33 @@ Recommended: **ViT-H** (best quality, 636M params)
 ---
 ### 1. Setup
 ```bash
-pip install torch segment-anything Pillow numpy pandas matplotlib scikit-image tqdm
+pip install -r requirements.txt --break-system-packages
 
 # Download SAM model
-wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h.pth
+mkdir -p models/sam_model
+
+# ViT-H (largest, best quality)
+wget -O models/sam_model/sam_vit_h.pth \
+https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
+
+# ViT-L (medium)
+wget -O models/sam_model/sam_vit_l.pth \
+https://dl.fbaipublicfiles.com/segment_anything/sam_vit_l_0b3195.pth
+
+# ViT-B (smallest, fastest)
+wget -O models/sam_model/sam_vit_b.pth \
+https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth
 ```
 
 ### 2. Configure
 Edit `config.py`:
 ```python
-BASE_DIR = "/path/to/project"
-IMAGES_DIR = os.path.join(BASE_DIR, "data/images")
-SAM_CHECKPOINT = os.path.join(BASE_DIR, "models/sam_vit_h.pth")
-OUTPUT_BASE_DIR = os.path.join(BASE_DIR, "outputs")
+BASE_DIR = "/path/to/project/root"
+IMAGES_DIR = os.path.join(BASE_DIR, "dataset/<images_folder>")
+GROUND_TRUTH = os.path.join(BASE_DIR, "dataset/<ground_truth_file>")
+SAM_CHECKPOINT = os.path.join(BASE_DIR, "models/sam_model/sam_vit_h.pth")
+SAM_MODEL_TYPE = "vit_h"
+OUTPUT_BASE_DIR = os.path.join(BASE_DIR, "<output_folder>")
 CITY_NAME = "erlangen"
 N_TREES = 96
 ```
@@ -64,10 +78,10 @@ python exp06_multiscale_300_225_dpi.py
 ### 5. Visualize Results
 ```bash
 # Single experiment
-python visualize_samples.py --experiment exp04_multiscale_finetuned --num_samples 10
+python visualize_samples.py --experiment exp04_multiscale_finetuned --num_samples 3
 
 # All experiments comparison
-python visualize_samples.py --all_experiments --comparisons --num_samples 5
+python visualize_samples.py --all_experiments --comparisons --num_samples 3
 ```
 
 ---
@@ -209,4 +223,4 @@ tail -f outputs/exp04_multiscale_finetuned/logs/processing.log
 After segmentation:
 1. Review metrics: `outputs/exp04_multiscale_finetuned/metrics/summary_metrics.csv`
 2. View visualizations: `python visualize_samples.py --all_experiments --comparisons`
-3. Use segments for classification or evaluation
+3. Use segments for classification
