@@ -17,12 +17,11 @@ Ring definitions (annuli, NOT full circles):
 
 Folder structure expected:
   <project_root>/
-  ├── data/<dataset>/<images>/           ← original aerial images
-  ├── data/<dataset>/pixel_groundtruth/  ← .npz GT masks
-  └── <output>/
-      ├── segmentation/outputs/exp04_multiscale_finetuned/segments/
-      ├── classification/outputs/stage1_context/<approach>/classifications/
-      └── evaluation/outputs/<experiment>/
+  ├── dataset/<images_folder>/           ← original aerial images
+  ├── dataset/<pixel_groundtruth_folder>/  ← .npz GT masks
+  ├── segmentation/outputs/exp04_multiscale_finetuned/segments/
+  ├── classification/outputs/<approach>/classifications/
+  └── evaluation/outputs/<experiment>/
 
 File naming conventions:
   GT .npz:        {devEUI}{suffix}_gt.npz
@@ -43,14 +42,14 @@ import math
 BASE_DIR = "/path/to/project/root"
 
 # Input data
-IMAGES_DIR = os.path.join(BASE_DIR, "data/<dataset>/<images_folder>")
-PIXEL_GT_DIR = os.path.join(BASE_DIR, "data/<dataset>/pixel_groundtruth_<dpi>")
-SEGMENTS_DIR = os.path.join(BASE_DIR, "<output>/segmentation/outputs/exp04_multiscale_finetuned/segments")
-CLASSIFICATIONS_DIR = os.path.join(BASE_DIR, "<output>/classification/outputs/stage1_context/<approach>/classifications")
+IMAGES_DIR = os.path.join(BASE_DIR, "dataset/<images_folder>")
+GROUND_TRUTH = os.path.join(BASE_DIR, "dataset/<ground_truth_file>")
+SEGMENTS_DIR = os.path.join(BASE_DIR, "segmentation/outputs/<experiment_name>/segments")
+CLASSIFICATIONS_DIR = os.path.join(BASE_DIR, "classification/outputs/<approach>/classifications")
 
 # Output
 EXPERIMENT_NAME = "<experiment_identifier>"
-OUTPUT_BASE_DIR = os.path.join(BASE_DIR, f"<output>/evaluation/outputs/{EXPERIMENT_NAME}")
+OUTPUT_BASE_DIR = os.path.join(BASE_DIR, f"evaluation/outputs/{EXPERIMENT_NAME}")
 
 
 # IMAGE & SCALE CONFIGURATION
