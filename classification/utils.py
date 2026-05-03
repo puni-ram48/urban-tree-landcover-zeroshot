@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Utility Functions for Stage 1 Classification
+Utility Functions for Clip Classification
 
-Shared functions for exp01_clip_classification.py and visualize_samples.py:
+Shared functions for clip_classification.py and visualize_samples.py:
   - Logging, GPU memory, timing
   - Directory and checkpoint I/O
   - Segment loading, CLIP model loading
