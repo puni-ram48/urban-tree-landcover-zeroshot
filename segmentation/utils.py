@@ -249,7 +249,7 @@ def load_checkpoint(checkpoint_path: str) -> Optional[Dict]:
 
 # Timer
 class Timer:
-   """Context manager for measuring elapsed time."""
+    """Context manager for measuring elapsed time."""
     def __init__(self):
         self.start = None
         self.elapsed = None
@@ -287,7 +287,7 @@ def parse_pgw(pgw_path: str) -> Dict[str, float]:
 # Coordinate transformation
 def pixel_to_world(row: int, col: int,
                    pgw: Dict[str, float]) -> Tuple[float, float]:
-  """Convert pixel (row, col) to world (x, y) coordinates."""
+    """Convert pixel (row, col) to world (x, y) coordinates."""
     x = pgw["top_left_x"] + col * pgw["pixel_size_x"]
     y = pgw["top_left_y"] + row * pgw["pixel_size_y"]
     return x, y
@@ -303,7 +303,7 @@ def transform_mask_to_target(mask: np.ndarray,
                              source_pgw: Dict,
                              target_pgw: Dict,
                              target_shape: Tuple[int, int]) -> np.ndarray:
-   """Reproject mask from source to target image coordinates using PGW."""
+    """Reproject mask from source to target image coordinates using PGW."""
     h_tgt, w_tgt = target_shape
     transformed = np.zeros(target_shape, dtype=bool)
     rows, cols = np.where(mask)
