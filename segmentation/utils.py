@@ -57,7 +57,7 @@ def clear_gpu_cache():
 
 
 def get_memory_usage() -> Dict[str, float]:
-   """Return current CPU and GPU memory usage (in GB)."""
+    """Return current CPU and GPU memory usage (in GB)."""
     stats = {
         "cpu_used_gb": psutil.virtual_memory().used / (1024 ** 3),
         "cpu_available_gb": psutil.virtual_memory().available / (1024 ** 3),
