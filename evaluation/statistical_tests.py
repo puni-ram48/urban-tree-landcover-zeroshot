@@ -25,8 +25,8 @@ from scipy.stats import wilcoxon
 BASE = "<output_folder>/evaluation/outputs"
 
 # RQ1 — Segmentation coverage
-PATH_E1 = "<output_folder>/segmentation/outputs/exp01_single_default/metrics/per_image_metrics.csv"
-PATH_E4 = "<output_folder>/segmentation/outputs/exp04_multiscale_finetuned/metrics/per_image_metrics.csv"
+PATH_E1 = "segmentation/outputs/exp01_single_default/metrics/per_image_metrics.csv"
+PATH_E4 = "segmentation/outputs/exp04_multiscale_finetuned/metrics/per_image_metrics.csv"
 
 # RQ2 — Prompt design
 PATH_PROMPT0 = f"{BASE}/aerial2020_zero_prompt0_results/per_tree_metrics_pixelgt.csv"
