@@ -227,7 +227,11 @@ def save_visualization(image_np: np.ndarray, cls_layer: np.ndarray, gt_npz: dict
     ring_suffixes = [r["suffix"] for r in config.RINGS]
     x = np.arange(len(ring_suffixes))
     bar_w = 0.12
-    cls_bar_colors = {"Vegetation": "green", "Building": "orangered", "Road": "gold"}
+    cls_bar_colors = {
+    "Vegetation": "#0F6A32",
+    "Building": "#9F2F2F",
+    "Road": "#5D5959"
+    }
     offsets = [-2.5, -1.5, -0.5, 0.5, 1.5, 2.5]
 
     for ci, cls in enumerate(config.CLASS_NAMES):
