@@ -76,10 +76,3 @@ outputs/
 TreeDataBase: [Citation to be provided upon publication]
 
 ---
-
-## Next Steps
-
-→ [Segmentation](../segmentation/README.md)
-```
-
----
