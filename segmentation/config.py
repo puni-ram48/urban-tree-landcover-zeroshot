@@ -14,7 +14,7 @@ IMAGES_DIR = os.path.join(BASE_DIR, "dataset/<images_folder>")
 GROUND_TRUTH = os.path.join(BASE_DIR, "dataset/<ground_truth_file>")
 SAM_CHECKPOINT = os.path.join(BASE_DIR, "models/sam_model/sam_vit_h.pth")
 SAM_MODEL_TYPE = "vit_h"
-OUTPUT_BASE_DIR = os.path.join(BASE_DIR, "<output_folder>")
+OUTPUT_BASE_DIR = os.path.join(BASE_DIR, "segmentation/outputs")
 
 # Dataset configuration
 CITY_NAME = "erlangen"
