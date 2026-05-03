@@ -215,7 +215,7 @@ def visualize_experiment(experiment_name: str, num_samples: int):
         except Exception as e:
             continue
 
-    print(f"✓ Created {successful} visualizations")
+    print(f" Created {successful} visualizations")
     print(f"Output: {viz_dir}")
     return successful
 
@@ -281,7 +281,7 @@ def create_comparison_grids(num_comparisons: int):
         except Exception as e:
             continue
 
-    print(f"✓ Created {successful} comparison grids")
+    print(f" Created {successful} comparison grids")
     print(f"Output: {comparison_dir}")
     return successful
 
