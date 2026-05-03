@@ -97,7 +97,7 @@ def main():
 
     # LOAD CLIP
     print(f"\nloading CLIP: {config.CLIP_MODEL_PATH}")
-    clip_model, clip_processor = utils.load_clip_model(config.CLIP_MODEL_PATH, device)
+    clip_model, clip_processor = utils.load_clip_model(config.CLIP_MODEL_NAME,device,cache_dir=config.CLIP_MODEL_PATH)
     print("CLIP loaded\n")
 
     # OUTPUT DIRECTORIES
