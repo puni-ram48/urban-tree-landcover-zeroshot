@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Stage 1 Experiment — CLIP Classification
+CLIP Classification Experimentation
 
 Runs CLIP classification on SAM segments with configurable:
   - Context-handling approaches (zero, highlight, larger_crop, dual_composite)
@@ -9,18 +9,18 @@ Runs CLIP classification on SAM segments with configurable:
 
 Usage:
   # Test run (first 5 images)
-  python classification/exp01_classification.py --approach zero --test
-  python classification/exp01_classification.py --approach highlight --test
+  python classification/clip_classification.py --approach zero --test
+  python classification/clip_classification.py --approach highlight --test
 
   # Full run
-  python classification/exp01_classification.py --approach zero
-  python classification/exp01_classification.py --approach highlight
-  python classification/exp01_classification.py --approach larger_crop
-  python classification/exp01_classification.py --approach dual_composite
+  python classification/clip_classification.py --approach zero
+  python classification/clip_classification.py --approach highlight
+  python classification/clip_classification.py --approach larger_crop
+  python classification/clip_classification.py --approach dual_composite
 
   # With aggregation mode
-  python classification/exp01_classification.py --approach zero --aggregation average
-  python classification/exp01_classification.py --approach zero --aggregation single
+  python classification/clip_classification.py --approach zero --aggregation average
+  python classification/clip_classification.py --approach zero --aggregation single
 """
 
 import os
@@ -35,7 +35,7 @@ import config
 import utils
 
 def main():
-    parser = argparse.ArgumentParser(description="Stage 1 CLIP classification")
+    parser = argparse.ArgumentParser(description=" CLIP classification")
     parser.add_argument("--approach", required=True, choices=list(config.APPROACHES.keys()),
                        help="context-handling approach")
     parser.add_argument("--aggregation", choices=["single", "average"], default="single",
@@ -54,7 +54,7 @@ def main():
    
     # HEADER
     print("=" * 70)
-    print(f"STAGE 1 — {approach.upper()} / {aggregation.upper()}"
+    print(f"CLIP Classification — {approach.upper()} / {aggregation.upper()}"
           f"{' (TEST)' if test_mode else ''}")
     print("=" * 70)
     print(f"description       : {approach_info['description']}")
@@ -103,7 +103,7 @@ def main():
     logger = utils.setup_logging(log_file, terminal_log, config.LOG_LEVEL)
 
     logger.info("=" * 70)
-    logger.info(f"STAGE 1 — {approach.upper()} / {aggregation.upper()}"
+    logger.info(f"CLIP Classification — {approach.upper()} / {aggregation.upper()}"
                 f"{' (TEST)' if test_mode else ''}")
     logger.info("=" * 70)
     logger.info(f"city              : {config.CITY_NAME}")
@@ -232,7 +232,7 @@ def main():
     # SUMMARY
     logger.info("")
     logger.info("=" * 70)
-    logger.info(f"STAGE 1 COMPLETE — {approach.upper()} / {aggregation.upper()}")
+    logger.info(f"CLIP Classification COMPLETE — {approach.upper()} / {aggregation.upper()}")
     logger.info("=" * 70)
     logger.info(f"images processed: {len(results)}")
     logger.info(f"total time      : {total_time/60:.1f} min ({total_time:.0f}s)")
@@ -249,7 +249,7 @@ def main():
         logger.info(f"avg time/img    : {df['processing_time_seconds'].mean():.2f}s")
 
     print("\n" + "=" * 70)
-    print(f"STAGE 1 COMPLETE — {approach.upper()} / {aggregation.upper()}"
+    print(f"CLIP Classification COMPLETE — {approach.upper()} / {aggregation.upper()}"
           f"{' (TEST)' if test_mode else ''}")
     print("=" * 70)
     print(f"results: {output_dirs['base']}")
