@@ -35,7 +35,7 @@ DEVICE = "cuda"
 ### 3. Test (Optional)
 ```bash
 python classification/clip_classification.py --approach zero --test       # Test run
-python classification/visualize_samples.py --approach zero --test               # Visualize test
+python classification/visualize_samples.py --approach zero              # Visualize test
 ```
 
 ### 4. Run Experiments
