@@ -1,251 +1,297 @@
-# CLIP Classification Pipeline
+# 🧠 CLIP Classification Pipeline
 
-Contrastive Language–Image Pretraining (CLIP)-based classification of SAM segments with configurable context-handling approaches and prompt versions.
+This pipeline performs **semantic classification of SAM-generated segments** using **CLIP (Contrastive Language–Image Pretraining)** with multiple context-aware strategies and prompt engineering variants.
+
+It is designed to evaluate how **visual context + prompt design** influence classification performance in aerial imagery.
 
 ---
 
-## Quick Start
+## 📌 Overview
 
-### 1. Setup 
-```bash
-# already installed requirements.txt in segmentation phase
-pip install -r requirements.txt --break-system-packages 
+The system classifies each SAM segment into:
+
+* Vegetation
+* Building
+* Road
+
+It supports multiple **context-handling strategies** and **prompt versions** for ablation studies.
+
+---
+
+## ⚙️ Installation
+
+```bash id="j5c7l2"
+pip install -r requirements.txt --break-system-packages
 ```
-### CLIP Model Setup
-The CLIP model is automatically downloaded the first time the pipeline is executed.
 
-Unlike the default Hugging Face cache (~/.cache/huggingface), this project stores the model locally inside the project directory:
-```bash
+---
+
+## 🤖 CLIP Model Setup
+
+The CLIP model is automatically downloaded on first run.
+
+To ensure reproducibility, the model is stored locally:
+
+```
 models/clip_model/
 ```
 
-### 2. Configure
-Edit `config.py`:
-```python
-BASE_DIR = "/path/to/project/root"
-IMAGES_DIR = os.path.join(BASE_DIR, "dataset/<images_folder>")
-SEGMENTS_DIR = os.path.join(BASE_DIR, "segmentation/outputs/<experiment_name>/segments")
-CLIP_MODEL_PATH = os.path.join(BASE_DIR, "models/clip_model/clip-vit-large-patch14-336/")
-OUTPUT_BASE_DIR = os.path.join(BASE_DIR, "classification/outputs/")
+Default model:
 
-PROMPT_VERSION = "1.3"  # Options: "0", "1", "1.1", "1.2", "1.3"
+```
+clip-vit-large-patch14-336
+```
+
+---
+
+## ⚙️ Configuration
+
+Edit `config.py`:
+
+```python id="3p9kqv"
+BASE_DIR = "/path/to/project/root"
+
+IMAGES_DIR = BASE_DIR + "/dataset/images"
+SEGMENTS_DIR = BASE_DIR + "/segmentation/outputs/exp04/segments"
+
+CLIP_MODEL_PATH = BASE_DIR + "/models/clip_model/clip-vit-large-patch14-336/"
+OUTPUT_BASE_DIR = BASE_DIR + "/classification/outputs"
+
+PROMPT_VERSION = "1.3"  # 0, 1, 1.1, 1.2, 1.3
 DEVICE = "cuda"
 ```
 
-### 3. Test (Optional)
-```bash
-python classification/clip_classification.py --approach zero --test       # Test run
-python classification/visualize_samples.py --approach zero              # Visualize test
+---
+
+## 🧪 Quick Test (Recommended)
+
+```bash id="v9q1n3"
+python classification/clip_classification.py --approach zero --test
+python classification/visualize_samples.py --approach zero
 ```
 
-### 4. Run Experiments
+---
 
-**All four context-handling approaches:**
-```bash
-python classification/clip_classification.py  --approach zero              
-python classification/clip_classification.py --approach highlight         
-python classification/clip_classification.py --approach larger_crop       
-python classification/clip_classification.py --approach dual_composite    
+## 🚀 Running Experiments
+
+### 🔹 Core Approaches
+
+| Approach       | Description                   |
+| -------------- | ----------------------------- |
+| zero           | Isolated segment (no context) |
+| highlight      | Full image + cyan highlight   |
+| larger_crop    | Enlarged local crop (3× bbox) |
+| dual_composite | Global + local side-by-side ⭐ |
+
+```bash id="k2m8xw"
+python classification/clip_classification.py --approach zero
+python classification/clip_classification.py --approach highlight
+python classification/clip_classification.py --approach larger_crop
+python classification/clip_classification.py --approach dual_composite
 ```
 
-**With aggregation mode (optional):**
-```bash
+---
+
+### 🔹 Aggregation Mode (Optional)
+
+```bash id="q7n4zd"
 python classification/clip_classification.py --approach zero --aggregation average
-python classification/clip_classification.py --approach highlight --aggregation average
 ```
 
-### 5. Visualize Results
-```bash
-# Single approach
-python classification/visualize_samples.py  --approach zero
-python classification/visualize_samples.py  --approach highlight
+Modes:
 
-# Compare all approaches side-by-side
-python classification/visualize_samples.py  --compare
-python classification/visualize_samples.py  --compare --max_images 10
-```
+* `average` → robust mean prediction across segments
 
 ---
 
-## Experiments Overview
+## 🧾 Prompt Engineering
 
-| Approach | Type | Context | Best For |
-|----------|------|---------|----------|
-| **zero** | Baseline | Isolated segment, black background | Segment alone |
-| **highlight** | Context | Full image with cyan highlight | Global + visual cue |
-| **larger_crop** | Context | 3× bounding box with real pixels | Natural surroundings |
-| **dual_composite** | Context | Side-by-side global + local | ⭐ **RECOMMENDED** |
+Controlled via `PROMPT_VERSION` in `config.py`.
 
-**Prompt Versions (select via `PROMPT_VERSION` in config.py):**
-
-| Version | Description | Use |
-|---------|-------------|-----|
-| **0** | Minimal ("a photo of vegetation") | Baseline |
-| **1** | Basic aerial descriptions | Standard |
-| **1.1** | Material-focused (buildings) | Conservative |
-| **1.2** | Color diversity (vegetation) | Bolder |
-| **1.3** | Balanced across all classes | ⭐ **RECOMMENDED** |
+| Version | Description                 | Usage       |
+| ------- | --------------------------- | ----------- |
+| 0       | Minimal prompts             | Baseline    |
+| 1       | Basic aerial text           | Standard    |
+| 1.1     | Material-aware prompts      | Buildings   |
+| 1.2     | Vegetation-enhanced prompts | Green areas |
+| 1.3     | Balanced prompts ⭐          | Recommended |
 
 ---
 
-## Output Structure
+## 📊 Output Structure
 
-```
+```id="x8c2ba"
 outputs/
 ├── zero_single/
-│   ├── classifications/           ← {devEUI}_classification.npy
+│   ├── classifications/
 │   ├── metrics/
 │   │   ├── per_image_metrics.csv
 │   │   ├── summary_metrics.csv
-│   │   └── terminal_log.txt
-│   └── logs/
-│       └── processing.log
+│   ├── logs/
+│
 ├── highlight_single/
 ├── larger_crop_single/
 ├── dual_composite_single/
-├── zero_average/                  ← alternative aggregation mode
-├── highlight_average/
-├── larger_crop_average/
-├── dual_composite_average/
+│
+├── *_average/                     # aggregation mode results
+│
 ├── visualizations/
 │   ├── zero_single/
-│   │   └── {devEUI}_viz.png       ← 3-panel: original | overlay | heatmap
 │   ├── highlight_single/
 │   ├── larger_crop_single/
 │   ├── dual_composite_single/
 │   ├── comparison/
-│   │   └── {devEUI}_comparison.png ← all 4 approaches side-by-side
-│   └── clip_approach_comparison.csv
-├── clip_aggregate_summary.csv    ← summary across all approaches
-└── checkpoint.npy                 ← intermediate checkpoint (removed on completion)
+│   │   └── {devEUI}_comparison.png
+│
+└── clip_aggregate_summary.csv
 ```
 
 ---
 
-## Results Interpretation
+## 📈 Key Metrics
 
-**Key Metrics (from CSV files):**
+### Model Performance
 
-- **mean_confidence_overall** — Average CLIP confidence 0-1 (>0.50 is good)
-- **silhouette_score** — Embedding space separation (>0.3 is good)
-- **spatial_consistency_score** — Neighbour agreement 0-1 (>0.5 is good)
-- **low_confidence_percentage** — % of segments with confidence <0.3
-- **pixel_coverage_percent** — % of image covered by each class
-- **processing_time_seconds** — Time per image
+* **mean_confidence_overall** → classification confidence (0–1)
+* **silhouette_score** → embedding separation quality
+* **spatial_consistency_score** → spatial smoothness of predictions
 
----
+### Reliability Indicators
 
-## Files
-
-| File | Purpose |
-|------|---------|
-| **clip_classification.py** | Main experiment script (run this) |
-| **visualize_samples.py** | Generate visualization PNGs |
-| **config.py** | Configuration & parameters |
-| **utils.py** | Shared utilities (logging, CLIP, metrics, I/O) |
+* **low_confidence_percentage** → uncertainty ratio
+* **pixel_coverage_percent** → class distribution
+* **processing_time_seconds** → runtime efficiency
 
 ---
 
-## Configuration Reference
+## 🧠 Interpretation Guide
 
-### Essential Settings
-```python
-# Paths (edit in config.py)
-BASE_DIR = "/path/to/project/root"
-IMAGES_DIR = "/path/to/images"
-SEGMENTS_DIR = "/path/to/segments"
-CLIP_MODEL_PATH = "/path/to/clip/model"
-OUTPUT_BASE_DIR = "/path/to/outputs"
-
-# Prompt selection
-PROMPT_VERSION = "1.3"  # "0", "1", "1.1", "1.2", or "1.3"
-
-# Device
-DEVICE = "cuda"  # or "cpu"
-```
-
-### Context-Handling Parameters
-```python
-# For highlight & dual_composite
-HIGHLIGHT_COLOR = (0, 255, 255)    # cyan tint
-HIGHLIGHT_ALPHA = 0.35             # opacity
-
-# For larger_crop
-LARGER_CROP_FACTOR = 3             # bounding box multiplier
-```
-
-### Classes & Colors
-```python
-CLASS_NAMES = ["Vegetation", "Building", "Road"]
-
-CLASS_COLORS = {
-    "Vegetation": [0.059, 0.416, 0.196, 0.6],  # dark green
-    "Building":   [0.624, 0.184, 0.184, 0.6],  # dark red
-    "Road":       [0.365, 0.349, 0.349, 0.6],  # dark gray
-}
-```
+| Metric              | Good Range | Meaning                    |
+| ------------------- | ---------- | -------------------------- |
+| Confidence          | > 0.50     | Reliable predictions       |
+| Silhouette Score    | > 0.30     | Good class separation      |
+| Spatial Consistency | > 0.50     | Stable spatial predictions |
+| Low Confidence %    | < 20%      | Few uncertain segments     |
 
 ---
 
-## Common Issues
+## 📊 Visualization
 
-| Problem | Solution |
-|---------|----------|
-| Images not found | Check `IMAGES_DIR` in config.py |
-| Segments not found | Ensure exp04 completed, check `SEGMENTS_DIR` |
-| CLIP model missing | Download from HuggingFace, update `CLIP_MODEL_PATH` |
-| CUDA out of memory | Reduce `CLIP_BATCH_SIZE` from 16 to 8 in config.py |
-| Slow processing | Verify GPU: `nvidia-smi` |
+### Single Approach
+
+```bash id="p4q8tz"
+python classification/visualize_samples.py --approach zero
+```
+
+### Cross-Approach Comparison
+
+```bash id="l7v1dc"
+python classification/visualize_samples.py --compare --max_images 10
+```
+
+Outputs:
+
+* Original image
+* Class overlay
+* Heatmap
+* Side-by-side method comparison
 
 ---
 
-## Tips
+## 📁 Key Scripts
 
-**Resume interrupted run:**
-```bash
-python exp01_clip_classification.py --approach zero
-# Automatically skips already-processed images via checkpoint
-```
+| File                     | Purpose                    |
+| ------------------------ | -------------------------- |
+| `clip_classification.py` | Main pipeline              |
+| `visualize_samples.py`   | Visualization & comparison |
+| `config.py`              | Experiment configuration   |
+| `utils.py`               | CLIP + metrics utilities   |
 
-**Monitor GPU:**
-```bash
+---
+
+## ⚙️ Context Strategies
+
+### Zero (Baseline)
+
+* No spatial context
+* Each segment classified independently
+
+### Highlight
+
+* Full image context
+* Segment highlighted in cyan overlay
+
+### Larger Crop
+
+* Enlarged bounding box (3×)
+* Preserves local surroundings
+
+### Dual Composite ⭐
+
+* Global + local view side-by-side
+* Best overall performance
+
+---
+
+## ⚠️ Common Issues
+
+| Issue              | Fix                                   |
+| ------------------ | ------------------------------------- |
+| Missing segments   | Run SAM pipeline first                |
+| CLIP model missing | Ensure HuggingFace download completes |
+| CUDA OOM           | Reduce batch size in config           |
+| Slow inference     | Verify GPU via `nvidia-smi`           |
+
+---
+
+## 🔧 Debugging & Monitoring
+
+```bash id="u3n9kq"
+# Resume run (auto-skips processed images)
+python clip_classification.py --approach zero
+
+# Monitor GPU
 watch -n 1 nvidia-smi
-```
 
-**Check logs:**
-```bash
-tail -f outputs/stage1_context/zero_single/logs/processing.log
-```
-
-**Test different prompt versions:**
-```bash
-# Edit config.py: PROMPT_VERSION = "1.3"
-python exp01_clip_classification.py --approach zero
-
-# Then try another version
-# Edit config.py: PROMPT_VERSION = "1.2"
-python exp01_clip_classification.py --approach zero
-
-# Compare results
-python visualize_samples.py --approach zero
+# Logs
+tail -f outputs/zero_single/logs/processing.log
 ```
 
 ---
 
-## For More Details
+## 📌 Research Context
 
-- **All configuration options** — See `config.py` comments
-- **Utility functions** — See `utils.py` docstrings
-- **CLIP model details** — Radford et al. (2021) "Learning Transferable Visual Models From Natural Language Supervision"
-- **SAM segments source** — From `exp04_multiscale_finetuned`
+This pipeline evaluates:
+
+* Impact of **visual context (zero vs multi-context)**
+* Effect of **prompt engineering (1.0–1.3 variants)**
+* Robustness of CLIP on **aerial segmentation tasks**
+* Integration with **SAM-based region proposals**
 
 ---
 
-## Next Steps
+## 🔄 Workflow
 
-After classification:
-1. Review aggregate metrics: `outputs/stage1_context/stage1_aggregate_summary.csv`
-2. View visualizations: `python visualize_samples.py --compare`
-3. Compare approaches and aggregation modes
-4. Analyze per-image metrics for failure modes
+```bash id="w2k9pz"
+# 1. Run classification
+python classification/clip_classification.py --approach dual_composite
+
+# 2. Visual inspection
+python classification/visualize_samples.py --compare
+
+# 3. Analyze metrics
+cat outputs/clip_aggregate_summary.csv
 ```
+
+---
+
+## 🎯 Purpose
+
+This module enables:
+
+* Systematic evaluation of CLIP for remote sensing
+* Controlled ablation of context strategies
+* Prompt engineering analysis
+* Integration with SAM segmentation + ring evaluation pipeline
+
+---
