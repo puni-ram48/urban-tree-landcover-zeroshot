@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Stage 1 Visualization — Classification Results
+Visualization for CLIP Classification Results
 
 Creates PNG visualizations from saved classification results.
 
@@ -289,7 +289,7 @@ def visualize_comparison(max_images: int = None):
 
         fig.legend(handles=legend_patches(), loc="lower center", ncol=3, fontsize=11,
                   bbox_to_anchor=(0.5, -0.01))
-        fig.suptitle(f"{base_name} — Stage 1 Comparison", fontsize=14, fontweight="bold", y=1.00)
+        fig.suptitle(f"{base_name} — CLIP Classification Comparison", fontsize=14, fontweight="bold", y=1.00)
 
         out_path = os.path.join(viz_dir, f"{base_name}_comparison.png")
         plt.savefig(out_path, dpi=config.VIZ_DPI, bbox_inches="tight")
@@ -333,7 +333,7 @@ def visualize_comparison(max_images: int = None):
     if agg_rows:
         agg_df = pd.DataFrame(agg_rows)
         print("\n" + agg_df.to_string(index=False))
-        agg_path = os.path.join(config.OUTPUT_BASE_DIR, "stage1_aggregate_summary.csv")
+        agg_path = os.path.join(config.OUTPUT_BASE_DIR, "clip_aggregate_summary.csv")
         agg_df.to_csv(agg_path, index=False)
         print(f"\naggregate summary: {agg_path}")
 
@@ -342,7 +342,7 @@ def visualize_comparison(max_images: int = None):
 # MAIN
 def main():
     parser = argparse.ArgumentParser(
-        description="Stage 1 classification visualization",
+        description="CLIP Classification Visualization",
         epilog="examples:\n"
                "  python visualize_samples.py --approach zero\n"
                "  python visualize_samples.py --compare\n"
