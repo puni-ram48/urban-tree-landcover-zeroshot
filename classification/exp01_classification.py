@@ -7,26 +7,20 @@ Runs CLIP classification on SAM segments with configurable:
   - Aggregation modes (single, average)
   - Prompt versions (via config.PROMPT_VERSION)
 
-Output structure per approach:
-  outputs/stage1_context/{approach}_{aggregation}/
-    ├── classifications/   -- {devEUI}_classification.npy
-    ├── metrics/           -- per_image_metrics.csv, summary_metrics.csv
-    └── logs/              -- processing.log
-
 Usage:
   # Test run (first 5 images)
-  python exp01_classification.py --approach zero --test
-  python exp01_classification.py --approach highlight --test
+  python classification/exp01_classification.py --approach zero --test
+  python classification/exp01_classification.py --approach highlight --test
 
   # Full run
-  python exp01_classification.py --approach zero
-  python exp01_classification.py --approach highlight
-  python exp01_classification.py --approach larger_crop
-  python exp01_classification.py --approach dual_composite
+  python classification/exp01_classification.py --approach zero
+  python classification/exp01_classification.py --approach highlight
+  python classification/exp01_classification.py --approach larger_crop
+  python classification/exp01_classification.py --approach dual_composite
 
   # With aggregation mode
-  python exp01_classification.py --approach zero --aggregation average
-  python exp01_classification.py --approach zero --aggregation single
+  python classification/exp01_classification.py --approach zero --aggregation average
+  python classification/exp01_classification.py --approach zero --aggregation single
 """
 
 import os
