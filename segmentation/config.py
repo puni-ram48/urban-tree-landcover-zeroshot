@@ -10,9 +10,9 @@ import os
 BASE_DIR = "/path/to/project/root"
 
 # Data paths (relative to project root)
-IMAGES_DIR = os.path.join(BASE_DIR, "<data_folder>/<images_folder>")
-GROUND_TRUTH = os.path.join(BASE_DIR, "<data_folder>/<ground_truth_file>")
-SAM_CHECKPOINT = os.path.join(BASE_DIR, "<models_folder>/sam_vit_h.pth")
+IMAGES_DIR = os.path.join(BASE_DIR, "dataset/<images_folder>")
+GROUND_TRUTH = os.path.join(BASE_DIR, "dataset/<ground_truth_file>")
+SAM_CHECKPOINT = os.path.join(BASE_DIR, "models/sam_model/sam_vit_h.pth")
 SAM_MODEL_TYPE = "vit_h"
 OUTPUT_BASE_DIR = os.path.join(BASE_DIR, "<output_folder>")
 
