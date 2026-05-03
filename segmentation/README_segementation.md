@@ -6,15 +6,6 @@ Automated tree segmentation using Segment Anything Model (SAM) with single-scale
 
 ## Quick Start
 
-### 0. Model Selection (E0) — Optional
-If you want to reproduce the model capacity comparison (ViT-B vs ViT-L vs ViT-H):
-```bash
-python exp0_model_selection.py  
-```
-Output: `outputs/sam_model_selection/model_selection_summary.csv`
-Recommended: **ViT-H** (best quality, 636M params)
-
----
 ### 1. Setup
 ```bash
 pip install -r requirements.txt --break-system-packages
