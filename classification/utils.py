@@ -112,11 +112,17 @@ def load_segments_from_npz(npz_path: str) -> List[np.ndarray]:
     """Load boolean segment masks from SAM .npz file."""
     data = np.load(npz_path)
     return [seg for seg in data["segmentations"]]
-def load_clip_model(model_path: str, device) -> Tuple[CLIPModel, CLIPProcessor]:
-    """Load CLIP model and processor from local checkpoint."""
-    model = CLIPModel.from_pretrained(model_path).to(device)
-    processor = CLIPProcessor.from_pretrained(model_path)
-    return model, processor
+  
+def load_clip_model(model_name: str, device, cache_dir: str = None):
+    model = CLIPModel.from_pretrained(
+        model_name,
+        cache_dir=cache_dir
+    ).to(device)
+
+    processor = CLIPProcessor.from_pretrained(
+        model_name,
+        cache_dir=cache_dir
+    )
 
 # CROP PREPARATION
 def _resize_and_pad(pil_img: Image.Image, target_size: int) -> Image.Image:
