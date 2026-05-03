@@ -29,5 +29,5 @@ segment-anything @ git+https://github.com/facebookresearch/segment-anything.git
 transformers>=4.35.0
 
 # Optional but recommended for better performance
-# accelerate>=0.20.0  # For faster CLIP inference
-# sentencepiece>=0.1.99  # For some CLIP tokenizers
+accelerate>=0.20.0  # For faster CLIP inference
+sentencepiece>=0.1.99  # For some CLIP tokenizers
