@@ -21,7 +21,8 @@ BASE_DIR = "/path/to/project/root"
 
 IMAGES_DIR = os.path.join(BASE_DIR, "dataset/<images_folder>")
 SEGMENTS_DIR = os.path.join(BASE_DIR, "<output_folder>/segmentation/outputs/exp04_multiscale_finetuned/segments")
-CLIP_MODEL_PATH = os.path.join(BASE_DIR, "models/clip_model/clip-vit-large-patch14-336/")
+CLIP_MODEL_NAME = "openai/clip-vit-large-patch14-336"
+CLIP_MODEL_PATH = os.path.join(BASE_DIR, "models/clip_model")
 OUTPUT_BASE_DIR = os.path.join(BASE_DIR, "<output_folder>/classification/outputs/stage1_context")
 
 
