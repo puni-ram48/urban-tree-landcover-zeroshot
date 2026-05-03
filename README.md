@@ -17,34 +17,10 @@ This project implements a complete pipeline for:
 
 ---
 
-## 🧠 Pipeline Summary
+## 🧠 Pipeline Architecture
 
-```text id="z7k1qp"
-📍 Data Preparation
-   → QGIS image extraction (Aerial 2020/2025, Atlanta satellite)
-   → Pixel-level ground truth generation (.npz)
+![Pipeline Architecture](pipeline_overview.pdf)
 
-        ↓
-
-🧩 Segmentation (SAM)
-   → Multi-scale tree segmentation (ViT-H)
-   → Mask generation per tree region
-
-        ↓
-
-🏷️ Classification (CLIP)
-   → Segment-level classification
-   → Context strategies (zero, highlight, crop, composite)
-   → Prompt engineering (v0–v1.3)
-
-        ↓
-
-📊 Evaluation
-   → Pixel-level comparison with ground truth
-   → Ring buffers (2.5m / 5m / 7.5m)
-   → Metrics: MAE, IoU, F1, R², MBE
-   → Statistical testing (Wilcoxon)
-```
 
 ---
 
