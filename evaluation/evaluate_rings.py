@@ -7,22 +7,22 @@ rasterized from QGIS vector shapefiles.
 
 Ground truth (.npz) contains per-pixel binary masks:
   vegetation — greenAtta or greenDeta polygons
-  building   — building polygons
-  road       — remaining pixels (not veg, not building)
+  building — building polygons
+  road — remaining pixels (not veg, not building)
 
 Pipeline:
-  SAM .npz  → segment masks (N × H × W bool)
+  SAM .npz → segment masks (N × H × W bool)
   CLIP .npy → class label per segment (list of strings)
-  Combined  → per-pixel class layer (H × W uint8)
+  Combined → per-pixel class layer (H × W uint8)
 
 Metrics per ring per class:
-  MAE        — |pred% − gt%|
-  Precision  — TP / (TP + FP)
-  Recall     — TP / (TP + FN)
-  F1-score   — harmonic mean of precision and recall
-  IoU        — TP / (TP + FP + FN)
-  R²         — area estimation quality (correlation)
-  MBE        — mean bias error (systematic over/underestimation)
+  MAE — |pred% − gt%|
+  Precision — TP / (TP + FP)
+  Recall — TP / (TP + FN)
+  F1-score — harmonic mean of precision and recall
+  IoU — TP / (TP + FP + FN)
+  R² — area estimation quality (correlation)
+  MBE — mean bias error (systematic over/underestimation)
 
 Output:
   outputs/<experiment>/
@@ -259,7 +259,7 @@ def main():
     print("=" * 70)
     print(f"segments dir     : {config.SEGMENTS_DIR}")
     print(f"classifications  : {config.CLASSIFICATIONS_DIR}")
-    print(f"pixel GT dir     : {config.PIXEL_GT_DIR}")
+    print(f"pixel GT dir     : {config.GROUND_TRUTH}")
     print(f"images dir       : {config.IMAGES_DIR}")
     print(f"m/px (DPI {config.EVAL_DPI}): {config.METERS_PER_PIXEL:.5f}")
     print("=" * 70)
@@ -318,7 +318,7 @@ def main():
             skipped += 1
             continue
 
-        gt_path = os.path.join(config.PIXEL_GT_DIR, f"{dev_eui}{config.EVAL_SUFFIX}_gt.npz")
+        gt_path = os.path.join(config.GROUND_TRUTH, f"{dev_eui}{config.EVAL_SUFFIX}_gt.npz")
         if not os.path.exists(gt_path):
             print(f"  SKIP {dev_eui}: pixel GT not found")
             skipped += 1
