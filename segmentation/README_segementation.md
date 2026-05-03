@@ -1,217 +1,252 @@
-# SAM Segmentation Pipeline
+# 🧠 SAM Segmentation Pipeline
 
-Automated tree segmentation using Segment Anything Model (SAM) with single-scale and multi-scale variants.
+Automated tree segmentation using the **Segment Anything Model (SAM)** with single-scale and multi-scale configurations.
 
 ---
 
-## Quick Start
+## 📌 Overview
 
-### 1. Setup
+This pipeline generates high-quality tree segmentation masks using SAM and supports:
+
+* Single-scale segmentation (baseline)
+* Multi-scale segmentation (recommended)
+* Fine-tuned and default variants
+* GPU-accelerated batch processing
+* Experiment-level comparison and visualization
+
+---
+
+## ⚙️ Installation
+
 ```bash
 pip install -r requirements.txt --break-system-packages
+```
 
-# Download SAM model
+---
+
+## 📦 Model Setup
+
+Download SAM checkpoints:
+
+```bash
 mkdir -p models/sam_model
 
-# ViT-H (largest, best quality)
+# ViT-H (Best quality)
 wget -O models/sam_model/sam_vit_h.pth \
 https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
 
-# ViT-L (medium)
+# ViT-L (Balanced)
 wget -O models/sam_model/sam_vit_l.pth \
 https://dl.fbaipublicfiles.com/segment_anything/sam_vit_l_0b3195.pth
 
-# ViT-B (smallest, fastest)
+# ViT-B (Fastest)
 wget -O models/sam_model/sam_vit_b.pth \
 https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth
 ```
 
-### 2. Configure
+---
+
+## ⚙️ Configuration
+
 Edit `config.py`:
+
 ```python
 BASE_DIR = "/path/to/project/root"
-IMAGES_DIR = os.path.join(BASE_DIR, "dataset/<images_folder>")
-GROUND_TRUTH = os.path.join(BASE_DIR, "dataset/<ground_truth_file>")
-SAM_CHECKPOINT = os.path.join(BASE_DIR, "models/sam_model/sam_vit_h.pth")
+
+IMAGES_DIR = BASE_DIR + "/dataset/images"
+GROUND_TRUTH = BASE_DIR + "/dataset/ground_truth"
+
+SAM_CHECKPOINT = BASE_DIR + "/models/sam_model/sam_vit_h.pth"
 SAM_MODEL_TYPE = "vit_h"
-OUTPUT_BASE_DIR = os.path.join(BASE_DIR, "segmentation/outputs")
+
+OUTPUT_BASE_DIR = BASE_DIR + "/segmentation/outputs"
+
 CITY_NAME = "erlangen"
 N_TREES = 96
 ```
 
-### 3. Test (Optional)
+---
+
+## 🧪 Quick Validation (Recommended)
+
+Run lightweight tests before full execution:
+
 ```bash
-python segmentation/test_singlescale_pipeline.py      # Validate single-scale on 3 images
-python segmentation/test_multiscale_pipeline.py  # Validate multi-scale on 3 groups
-```
-
-### 4. Run Experiments
-
-**Model Selection (optional baseline):**
-```bash
-python segmentation/exp0_model_selection.py  
-```
-
-**Single-scale (fast, baseline):**
-```bash
-python segmentation/exp01_single_default.py      
-python segmentation/exp02_single_finetuned.py    
-```
-
-**Multi-scale (better quality):**
-```bash
-python segmentation/exp03_multiscale_default.py      
-python segmentation/exp04_multiscale_finetuned.py    
-python segmentation/exp05_multiscale_225_150_dpi.py  
-python segmentation/exp06_multiscale_300_225_dpi.py 
-```
-
-### 5. Visualize Results
-```bash
-# Single experiment
-python segmentation/visualize_samples.py --experiment exp04_multiscale_finetuned --num_samples 3
-
-# All experiments comparison
-python segmentation/visualize_samples.py --all_experiments --comparisons --num_samples 3
+python segmentation/test_singlescale_pipeline.py
+python segmentation/test_multiscale_pipeline.py
 ```
 
 ---
 
-## Experiments Overview
+## 🚀 Running Experiments
 
-| Exp | Name | Type | Scales | Best For |
-|-----|------|------|--------|----------|
-| **01** | Single-Scale Default | Single | 225 DPI | Baseline |
-| **02** | Single-Scale Fine-tuned | Single | 225 DPI | Better single |
-| 03 | Multi-Scale Default | Multi | 300+225+150 | Comparison |
-| **04** | Multi-Scale Fine-tuned | Multi | 300+225+150 | ⭐ **RECOMMENDED** |
-| 05 | Two-Scale (225+150) | Multi | 225+150 | Avoid edge artifacts |
-| 06 | Two-Scale (300+225) | Multi | 300+225 | Avoid noise |
+### 🔹 Model Selection (Baseline Comparison)
+
+```bash
+python segmentation/exp00_model_selection.py
+```
 
 ---
 
-## Output Structure
+### 🔹 Single-Scale Experiments
+
+```bash
+python segmentation/exp01_single_default.py
+python segmentation/exp02_single_finetuned.py
+```
+
+---
+
+### 🔹 Multi-Scale Experiments (Recommended)
+
+```bash
+python segmentation/exp03_multiscale_default.py
+python segmentation/exp04_multiscale_finetuned.py   # ⭐ Best performance
+python segmentation/exp05_multiscale_225_150_dpi.py
+python segmentation/exp06_multiscale_300_225_dpi.py
+```
+
+---
+
+## ⭐ Recommended Configuration
+
+* **Best overall model:** `exp04_multiscale_finetuned`
+* **Best trade-off:** multi-scale (225 + 150 DPI)
+* **Fast baseline:** `exp01_single_default`
+
+---
+
+## 📊 Visualization
+
+### Single Experiment
+
+```bash
+python segmentation/visualize_samples.py \
+  --experiment exp04_multiscale_finetuned \
+  --num_samples 3
+```
+
+### Cross-Experiment Comparison
+
+```bash
+python segmentation/visualize_samples.py \
+  --all_experiments --comparisons --num_samples 3
+```
+
+---
+
+## 📁 Output Structure
 
 ```
 outputs/
-├── sam_model_selection/                 ← E0 results
-│   ├── model_selection_per_image.csv
-│   └── model_selection_summary.csv
 ├── exp01_single_default/
 ├── exp02_single_finetuned/
-├── exp04_multiscale_finetuned/          ← Best results here
-│   ├── segments/
-│   │   ├── tree_001_2_segments.npz
-│   │   └── ... (one per tree)
-│   ├── metrics/
+├── exp04_multiscale_finetuned/
+│   ├── segments/            # Mask outputs (.npz)
+│   ├── metrics/             # Quantitative evaluation
 │   │   ├── per_image_metrics.csv
 │   │   └── summary_metrics.csv
-│   ├── visualizations/
-│   │   └── viz_*.png
-│   └── logs/
-│       └── processing.log
+│   ├── visualizations/      # Qualitative results
+│   └── logs/                # Execution logs
 ├── exp05_multiscale_225_150_dpi/
 ├── exp06_multiscale_300_225_dpi/
-└── comparisons/                         ← Cross-experiment grids
-    └── comparison_*.png
+└── comparisons/             # Cross-experiment figures
 ```
 
 ---
 
-## Results Interpretation
+## 📈 Key Metrics
 
-**Key Metrics (from CSV files):**
+| Metric                    | Meaning                  |
+| ------------------------- | ------------------------ |
+| `segment_count`           | Number of masks per tree |
+| `mean_confidence`         | Prediction quality (0–1) |
+| `mean_stability`          | Mask consistency (0–1)   |
+| `pixel_coverage_percent`  | Tree coverage ratio      |
+| `processing_time_seconds` | Runtime per image        |
 
-- **segment_count** — Number of tree parts found (150-250 normal)
-- **mean_confidence** — Quality score 0-1 (>0.85 is good)
-- **mean_stability** — Reliability 0-1 (>0.90 is good)
-- **pixel_coverage_percent** — Tree coverage 40-70% is normal
-- **processing_time_seconds** — Computation time per image/group
+**Good performance indicators:**
 
----
-
-## Files
-
-| File | Purpose |
-|------|---------|
-| **exp00_model_selection.py** | SAM variant comparison (E0) |
-| **exp01-exp06** | Experiment scripts (run these) |
-| **test_single_pipeline.py** | Quick validation (3 images) |
-| **test_multiscale_pipeline.py** | Quick validation (3 groups) |
-| **visualize_samples.py** | Generate visualizations |
-| **config.py** | Configuration & parameters |
-| **utils.py** | Shared utilities |
-| **sam_device_patch.py** | SAM device compatibility |
-
+* Confidence > 0.85
+* Stability > 0.90
+* Coverage: 40–70%
 
 ---
 
-## Configuration Reference
+## 🧠 Key Experiments Summary
 
-### Essential Settings
-```python
-# Paths (edit in config.py)
-IMAGES_DIR = "/path/to/images"
-SAM_CHECKPOINT = "/path/to/sam_vit_h.pth"
-OUTPUT_BASE_DIR = "/path/to/outputs"
-DEVICE = "cuda"  # or "cpu"
-```
+| Exp | Type                    | Description         | Recommendation |
+| --- | ----------------------- | ------------------- | -------------- |
+| 01  | Single-scale            | Baseline            | Reference only |
+| 02  | Single-scale fine-tuned | Improved baseline   | OK             |
+| 03  | Multi-scale default     | Comparison          | Intermediate   |
+| 04  | Multi-scale fine-tuned  | Best quality        | ⭐ Recommended  |
+| 05  | 225 + 150 DPI           | Noise reduction     | Useful         |
+| 06  | 300 + 225 DPI           | Detail preservation | Useful         |
 
-### SAM Parameters (exp04 recommended)
+---
+
+## ⚙️ SAM Parameters (Exp04)
+
 ```python
-EXP4_PARAMS = {
-    "points_per_side": 64,              # Grid density
-    "pred_iou_thresh": 0.80,            # Quality threshold
-    "stability_score_thresh": 0.85,     # Stability threshold
-    "min_mask_region_area": 100,        # Remove noise masks
+{
+    "points_per_side": 64,
+    "pred_iou_thresh": 0.80,
+    "stability_score_thresh": 0.85,
+    "min_mask_region_area": 100
 }
 ```
 
 ---
 
-## Common Issues
+## ⚠️ Common Issues
 
-| Problem | Solution |
-|---------|----------|
-| Images not found | Check `IMAGES_DIR` path in config.py |
-| SAM checkpoint missing | Download from FB and update `SAM_CHECKPOINT` |
-| CUDA out of memory | Reduce `points_per_side` from 64 to 32 |
-| PGW file missing | Multi-scale needs `.pgw` world files |
-| Slow processing | Ensure GPU available: `nvidia-smi` |
+| Issue              | Fix                                |
+| ------------------ | ---------------------------------- |
+| Missing images     | Verify `IMAGES_DIR`                |
+| Missing checkpoint | Download SAM weights               |
+| CUDA OOM           | Reduce `points_per_side`           |
+| Slow runtime       | Check GPU via `nvidia-smi`         |
+| Missing PGW files  | Required for multi-scale alignment |
 
 ---
 
-## Tips
+## 🔧 Utilities
 
-**Resume interrupted run:**
 ```bash
-python exp04_multiscale_finetuned.py
-# Automatically skips already-processed trees
-```
+# Resume interrupted run
+python segmentation/exp04_multiscale_finetuned.py
 
-**Monitor GPU:**
-```bash
+# Monitor GPU usage
 watch -n 1 nvidia-smi
-```
 
-**Check logs:**
-```bash
+# Check logs
 tail -f outputs/exp04_multiscale_finetuned/logs/processing.log
 ```
 
 ---
 
-## For More Details
+## 📌 Workflow
 
-- **Architecture & theory** — See research paper
-- **All configuration options** — See `config.py` comments
-- **Utility functions** — See `utils.py` docstrings
+```bash
+# 1. Run segmentation
+python segmentation/exp04_multiscale_finetuned.py
+
+# 2. Check outputs
+python segmentation/visualize_samples.py --all_experiments
+
+# 3. Use segments in classification pipeline
+```
 
 ---
 
-## Next Steps
+## 🎯 Purpose
 
-After segmentation:
-1. Review metrics: `outputs/exp04_multiscale_finetuned/metrics/summary_metrics.csv`
-2. View visualizations: `python visualize_samples.py --all_experiments --comparisons`
-3. Use segments for classification
+This pipeline provides:
+
+* High-quality tree segmentation using SAM
+* Multi-scale spatial robustness
+* Reproducible experimental design
+* Direct integration with downstream CLIP classification and evaluation
+
+---
