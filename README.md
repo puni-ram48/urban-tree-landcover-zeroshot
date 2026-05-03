@@ -60,7 +60,7 @@ The datasets used in this project are provided externally.
 
 📥 **Download dataset:**
 
-> [Dataset GoogleDrive Link](https://drive.google.com/drive/folders/1iYzQ5BwWaJfY9Vw63S6ZcfNObQTcwXuD?usp=sharing))
+> [Dataset GoogleDrive Link](https://drive.google.com/drive/folders/1iYzQ5BwWaJfY9Vw63S6ZcfNObQTcwXuD?usp=sharing)
 
 ---
 
