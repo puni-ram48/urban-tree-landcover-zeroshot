@@ -1,4 +1,4 @@
-# Evaluation — Ring-Based Buffer Analysis
+# Evaluation : Ring-Based Buffer Analysis
 
 Evaluates CLIP classification predictions against pixel-level ground truth rasterized from QGIS vector shapefiles using concentric ring buffers (annuli) around tree centers.
 
@@ -8,7 +8,8 @@ Evaluates CLIP classification predictions against pixel-level ground truth raste
 
 ### 1. Setup
 ```bash
-pip install numpy pandas matplotlib Pillow scipy
+## already installed requirements.txt in segmentation phase
+pip install -r requirements.txt --break-system-packages
 ```
 
 ### 2. Configure
@@ -27,7 +28,7 @@ EVAL_SUFFIX = "_2"  # 225 DPI
 
 ### 3. Run Evaluation
 ```bash
-python evaluate_rings.py
+python evaluation/evaluate_rings.py
 ```
 
 Output:
