@@ -71,7 +71,7 @@ The datasets used in this project are provided externally.
 * Pixel-level ground truth masks (QGIS rasterized)
 * Vector annotations (trees, buildings, vegetation)
 
-📖 For full dataset details and preprocessing steps, refer to the **project report**.
+📖 For full dataset details and preprocessing steps, refer to the [**project report**](Puneetha_DharmapuraShrirama_MasterThesis_Report).
 
 ---
 
