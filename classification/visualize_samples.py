@@ -15,12 +15,12 @@ Two modes:
 
 Usage:
   # Visualize one approach
-  python visualize_samples.py --approach zero
-  python visualize_samples.py --approach highlight
+  python classification/visualize_samples.py --approach zero
+  python classification/visualize_samples.py --approach highlight
 
   # Compare all approaches
-  python visualize_samples.py --compare
-  python visualize_samples.py --compare --max_images 5
+  python classification/visualize_samples.py --compare
+  python classification/visualize_samples.py --compare --max_images 5
 """
 
 import os
